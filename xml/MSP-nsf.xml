@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <flexgridsim version="0.4">
-    <rsa module="AddXT"></rsa>
+    <rsa module="MSP"></rsa>
 
     <trace file="trace.tr"></trace>
 
@@ -94,8 +94,9 @@
     <graph name="data" dots-file="MSP-nsf-data.dat"/>
     <graph name="ee" dots-file="MSP-nsf-ee.dat"/>
     <graph name="pc" dots-file="MSP-nsf-pc.dat"/>
-    <graph name="avgbps" dots-file="M-graph-avgbps-nsf.dat"/>
+    <graph name="avgbps" dots-file="MSP-graph-avgbps-nsf.dat"/>
     <graph name="su" dots-file="MSP-nsf-spectrum-utilization.dat"/>
-    <graph name="percent" dots-file="modulations_percentage.dat"/>
+    <graph name="percent" dots-file="MSP-modulations_percentage.dat"/>
+    <graph name="spectrumutilization" dots-file="MSP-nsf-su.dat"/>
     </graphs>
 </flexgridsim>

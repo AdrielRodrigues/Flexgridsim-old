@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <flexgridsim version="0.4">
-    <rsa module="BRT_NOPROT"></rsa>
+    <rsa module="Globecom"></rsa>
 
     <trace file="trace.tr"></trace>
 
-	<traffic calls="1000" load="215" max-rate="1000">
+	<traffic calls="100000" load="215" max-rate="1000">
 	  	<calls holding-time="1.0" rate="25" cos="1" weight="1"/>
 	  	<calls holding-time="1.0" rate="50" cos="1" weight="1"/>
         <calls holding-time="1.0" rate="125" cos="1" weight="1"/>
@@ -84,16 +84,19 @@
     </physical-topology>
 
     <graphs>
-    <graph name="fragmentation" dots-file="BRTNOPROT-nsf-fragmentation.dat"/>
-    <graph name="modulation" dots-file="BRTNOPROT-nsf-modulation.dat"/>
-    <graph name="mbbr" dots-file="BRTNOPROT-nsf-mbbr.dat"/>
-    <graph name="hops" dots-file="BRTNOPROT-nsf-hops.dat"/>
-    <graph name="hopsback" dots-file="BRTNOPROT-nsf-hopsback.dat"/>
-    <graph name="jfi" dots-file="BRTNOPROT-nsf-jfi.dat"/>
-    <graph name="xtps" dots-file="BRTNOPROT-nsf-xtps.dat"/>
-    <graph name="data" dots-file="BRTNOPROT-nsf-data.dat"/>
-    <graph name="ee" dots-file="BRTNOPROT-nsf-ee.dat"/>
-    <graph name="pc" dots-file="BRTNOPROT-nsf-pc.dat"/>
-    <graph name="avgbps" dots-file="BRTNOPROT-graph-avgbps-nsf.dat"/>
+    <graph name="fragmentation" dots-file="Globecom-nsf-fragmentation.dat"/>
+    <graph name="modulation" dots-file="Globecom-nsf-modulation.dat"/>
+    <graph name="mbbr" dots-file="Globecom-nsf-mbbr.dat"/>
+    <graph name="hops" dots-file="Globecom-nsf-hops.dat"/>
+    <graph name="hopsback" dots-file="Globecom-nsf-hopsback.dat"/>
+    <graph name="jfi" dots-file="Globecom-nsf-jfi.dat"/>
+    <graph name="xtps" dots-file="Globecom-nsf-xtps.dat"/>
+    <graph name="data" dots-file="Globecom-nsf-data.dat"/>
+    <graph name="ee" dots-file="Globecom-nsf-ee.dat"/>
+    <graph name="pc" dots-file="Globecom-nsf-pc.dat"/>
+    <graph name="avgbps" dots-file="Globecom-graph-avgbps-nsf.dat"/>
+    <graph name="su" dots-file="Globecom-nsf-spectrum-utilization.dat"/>
+    <graph name="percent" dots-file="Globecom-nsf-modulations_percentage.dat"/>
+    <graph name="spectrumutilization" dots-file="Globecom-nsf-su.dat"/>
     </graphs>
 </flexgridsim>

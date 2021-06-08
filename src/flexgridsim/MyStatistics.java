@@ -214,7 +214,17 @@ public class MyStatistics {
     		new InfoWriter(load, modulations, connections, name);
     	}
     	
-    	
+    	double spectrumUtilization = 0;
+    	for (int i = 0; i < pt.getNumLinks(); i++) {
+    		try {
+    			spectrumUtilization += pt.getLink(i).rateUsed();
+    			
+    		} catch (NullPointerException e) {
+    			
+    		}
+		}
+    	spectrumUtilization = 100 * spectrumUtilization/(pt.getNumLinks() * pt.getNumCores() * pt.getNumSlots());
+    	plotter.addDotToGraph("spectrumutilization", load, spectrumUtilization);
 	}
 	
 	/**
@@ -228,10 +238,13 @@ public class MyStatistics {
     		try {
     			fragmentationMean += pt.getLink(i).getFragmentationRatio(traffic.getCallsTypeInfo(), pt.getSlotCapacity());//pt.getSlotCapacity());
     			averageCrosstalk += pt.getLink(i).averageCrosstalk();
+    			
     		} catch (NullPointerException e) {
     			
     		}
 		}
+    	
+    	
     	averageCrosstalk /= pt.getNumLinks();
     	plotter.addDotToGraph("avgcrosstalk", load, averageCrosstalk);
     	fragmentationMean = fragmentationMean / pt.getNumLinks();

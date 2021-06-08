@@ -524,11 +524,11 @@ public int[] MSP(WeightedGraph G, int s, int demand) {
 */	
 	public boolean crosstalkCheck(int[] links, int core, int slot, int demand, int modulation) {
 		for(int l:links) {
-			boolean[] dispo = pt.getLink(l).getAllocableSpectrum(modulation, 2, core);
+			//boolean[] dispo = pt.getLink(l).getAllocableSpectrum(modulation, 2, core);
 			for(int i=slot; i<slot+demand; i++) {
-				if(!dispo[i]) {
-					return false;
-				}
+				//if(!dispo[i]) {
+					//return false;
+				//}
 			}
 		}
 		return true;

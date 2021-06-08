@@ -1,0 +1,12 @@
+#!/bin/bash
+gnuplot -e "load 'mbbr-usa'"
+epspdf mbbr-usa.eps mbbr-usa.pdf
+
+foldername=$(date +%Y-%m-%d-%H:%M:%S)
+#mkdir ~/resultados/$foldername
+#cp *.dat ~/core/resultados/$foldername
+#cp *.pdf ~/core/resultados/$foldername
+#cp *.xml ~/core/resultados/$foldername
+#cp *.jar ~/core/resultados/$foldername
+#./email
+

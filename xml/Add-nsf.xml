@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <flexgridsim version="0.4">
-    <rsa module="BRT_NOPROT"></rsa>
+    <rsa module="AddMap"></rsa>
 
     <trace file="trace.tr"></trace>
 
@@ -84,16 +84,19 @@
     </physical-topology>
 
     <graphs>
-    <graph name="fragmentation" dots-file="BRTNOPROT-nsf-fragmentation.dat"/>
-    <graph name="modulation" dots-file="BRTNOPROT-nsf-modulation.dat"/>
-    <graph name="mbbr" dots-file="BRTNOPROT-nsf-mbbr.dat"/>
-    <graph name="hops" dots-file="BRTNOPROT-nsf-hops.dat"/>
-    <graph name="hopsback" dots-file="BRTNOPROT-nsf-hopsback.dat"/>
-    <graph name="jfi" dots-file="BRTNOPROT-nsf-jfi.dat"/>
-    <graph name="xtps" dots-file="BRTNOPROT-nsf-xtps.dat"/>
-    <graph name="data" dots-file="BRTNOPROT-nsf-data.dat"/>
-    <graph name="ee" dots-file="BRTNOPROT-nsf-ee.dat"/>
-    <graph name="pc" dots-file="BRTNOPROT-nsf-pc.dat"/>
-    <graph name="avgbps" dots-file="BRTNOPROT-graph-avgbps-nsf.dat"/>
+    <graph name="fragmentation" dots-file="Add-nsf-fragmentation.dat"/>
+    <graph name="modulation" dots-file="Add-nsf-modulation.dat"/>
+    <graph name="mbbr" dots-file="Add-nsf-mbbr.dat"/>
+    <graph name="hops" dots-file="Add-nsf-hops.dat"/>
+    <graph name="hopsback" dots-file="Add-nsf-hopsback.dat"/>
+    <graph name="jfi" dots-file="Add-nsf-jfi.dat"/>
+    <graph name="xtps" dots-file="Add-nsf-xtps.dat"/>
+    <graph name="data" dots-file="Add-nsf-data.dat"/>
+    <graph name="ee" dots-file="Add-nsf-ee.dat"/>
+    <graph name="pc" dots-file="Add-nsf-pc.dat"/>
+    <graph name="avgbps" dots-file="Add-graph-avgbps-nsf.dat"/>
+    <graph name="su" dots-file="Add-nsf-spectrum-utilization.dat"/>
+    <graph name="percent" dots-file="Add-nsf-modulations_percentage.dat"/>
+    <graph name="spectrumutilization" dots-file="Add-nsf-su.dat"/>
     </graphs>
 </flexgridsim>

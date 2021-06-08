@@ -20,7 +20,7 @@ import flexgridsim.util.WeightedGraph;
  * @author adriel
  *
  */
-public class BRT_NOPROT_MP implements RSA  {
+public class Globecom implements RSA  {
 	private PhysicalTopology pt;
 	private VirtualTopology vt;
 	private ControlPlaneForRSA cp;
@@ -40,169 +40,66 @@ public class BRT_NOPROT_MP implements RSA  {
 		this.pt = pt;
 		this.vt = vt;
 		this.cp = cp;
-		this.graph = pt.getWeightedGraph();
-
-		
+		this.graph = pt.getWeightedGraph();		
 	}
 
 	@Override
 	public void flowArrival(Flow flow) {
+		
+		if (flow.getID() == 300) {
+			int a = 30;
+		}
+		
 		long id=-1;
 		int guardBand=1;
-		if(pt.getGrooming())
-			guardBand=0;
 		
-		int demandInSlots;
+		int demandInSlots = 0; // Inicializa variável
 		Path path;
 
-		int mod=5;
+		int mod=5; // Modulação testada a cada iteração
 		int modulation=0;
 		do{
-			// Demand may be different
 			demandInSlots = (int) Math.ceil(flow.getRate() / (double) Modulations.getBandwidth(mod)) + guardBand;
 			MultiGraph multigraph = new MultiGraph(graph, pt, demandInSlots);
-			path = getShortestPath(multigraph, flow.getSource(), flow.getDestination(),demandInSlots, mod);
+			path = getShortestPath(multigraph, flow.getSource(), flow.getDestination(),demandInSlots);
 			if(path!=null)
 				modulation=Modulations.getModulationByDistance(getPhysicalDistance(path.getLinks()));
 			else
 				modulation =-1;
 			mod--;
-		}while(mod>-1 &&modulation!=-1 && modulation!=mod+1);
+		}while(mod>-1 && modulation!=-1 && modulation!=mod+1);
 
-		// If no possible path found, block the call
-		
-		ArrayList<Path> paths = new ArrayList<Path>();
-		ArrayList<Integer> modulations = new ArrayList<Integer>();
-		boolean mp = false;
-		if(path == null) {
-			for(int r = 0; r < 2; r++) { //Numero de caminhos
-				mod = 5;
-				modulation = 0;
-				WeightedGraph g = new WeightedGraph(graph);
-				do {					
-					int d = (int) Math.ceil((flow.getRate()) / (double) Modulations.getBandwidth(mod));
-					d = (int) Math.ceil(d/2);
-					demandInSlots = (int) Math.ceil((flow.getRate() / 2) / (double) Modulations.getBandwidth(mod)) + guardBand;
-					MultiGraph multigraph = new MultiGraph(g, pt, demandInSlots);
-					path = getShortestPath(multigraph, flow.getSource(), flow.getDestination(),demandInSlots, mod);
-					if(path!=null)
-						modulation=Modulations.getModulationByDistance(getPhysicalDistance(path.getLinks()));
-					else
-						modulation =-1;
-					mod--;
-				}while(mod>-1 &&modulation!=-1 && modulation!=mod+1);
-				
-				if(path != null) {
-					paths.add(path);
-					modulations.add(modulation);
-					int[] l = path.getLinks();
-					for(int ll : l) {
-						int s = pt.getLink(ll).getSource();
-						int d = pt.getLink(ll).getDestination();
-						g.removeEdge(s, d);
-						g.removeEdge(d, s);
-					}
-				}
-				
-				if(paths.isEmpty())
-					break;
-				
-				if(path == null && paths.size() == 2) {
-					mp = true;
-					//System.out.println("MULTIPATH");
-				}
-			}
-		}
-		
-		if (path == null && !mp) {
+		if (path == null) {
 			cp.blockFlow(flow.getID());
 			return;
-		} else if(!mp){ 
-			if (path.getLinks()==null||path.getSlotList().isEmpty()) {
-				cp.blockFlow(flow.getID());
-				return;
-			}
-		} else if(mp) {
-			for(Path pat : paths) {
-				if (pat.getLinks()==null||pat.getSlotList().isEmpty()) {
-					cp.blockFlow(flow.getID());
-					return;
-				}
-			}
-		}
-		
-		if(!mp) {
-			id = vt.createLightpath(path, modulation);
-	
-			ArrayList<LightPath> lightpath = new ArrayList<LightPath>();
-			
-			if (id >= 0) {
-				flow.setLinks(path.getLinks());
-				flow.setSlotList(path.getSlotList());
-				flow.setModulationLevel(modulation);
-				lightpath.add(vt.getLightpath(id));
-			}
-			if(id<0){
-				cp.blockFlow(flow.getID());
-				return;
-			}
-			
-			if(!cp.acceptFlow(flow.getID(), lightpath)) {
-				vt.removeLightPath(id);
-				cp.blockFlow(flow.getID());
-				return;
-			}	
+		} else if (path.getLinks()==null||path.getSlotList().isEmpty()) {
+			cp.blockFlow(flow.getID());
 			return;
 		}
 		
-		if(mp) {
-			
-			//System.out.println("MP");
-			
-			ArrayList<Long> ids = new ArrayList<Long>();
-			for(int r = 0; r < 2; r++) {
-				ids.add(vt.createLightpath(paths.get(r), Modulations.getModulationLevel(modulations.get(r))));
-			}
-			
-			ArrayList<LightPath> lightpath = new ArrayList<LightPath>();
-			
-			int numb = 0;
-			boolean error = false;
-			for(Path pat : paths) {
-				if (ids.get(numb) >= 0) {
-					flow.setLinks(pat.getLinks(), numb);
-					flow.setSlotList(pat.getSlotList(), numb);
-					flow.setModulationLevel(modulations.get(numb));
-					lightpath.add(vt.getLightpath(ids.get(numb)));
-				} else {
-					error = true;
-				}
-				numb++;
-			}
-			
-			if(error) {
-				cp.blockFlow(flow.getID());
-			}
-			
-			if(!cp.acceptFlow(flow.getID(), lightpath)) {
-				for(Long i : ids) {
-					vt.removeLightPath(i);
-				}
-				cp.blockFlow(flow.getID());
-				return;
-			}
+		id = vt.createLightpath(path, modulation);
+		
+		ArrayList<LightPath> lightpath = new ArrayList<LightPath>();
+		
+		if (id >= 0) {
+			flow.setLinks(path.getLinks());
+			flow.setSlotList(path.getSlotList());
+			flow.setModulationLevel(modulation);
+			lightpath.add(vt.getLightpath(id));
+		}
+		if(id<0){
+			cp.blockFlow(flow.getID());
 			return;
 		}
+		
+		if(!cp.acceptFlow(flow.getID(), lightpath)) {
+			vt.removeLightPath(id);
+			cp.blockFlow(flow.getID());
+			return;
+		}	
+		return;
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	public int getPhysicalDistance(int[] links){
 		if(links!=null&& links.length>0){
@@ -210,6 +107,7 @@ public class BRT_NOPROT_MP implements RSA  {
 			for (int i = 0; i < links.length - 1; i++) {
 				physicalDistance += pt.getLink(links[i]).getDistance();
 			}
+			//return physicalDistance/2;
 			return physicalDistance;
 		}
 		else
@@ -360,58 +258,48 @@ public int[] MSP(WeightedGraph G, int s, int demand) {
 		
 		return path;
 	}
-
-	public Path getShortestPath(MultiGraph multigraph, int src, int dst, int demand, int modulationLevel) {
+	
+	// Primeiro
+	public Path getShortestPath(MultiGraph multigraph, int src, int dst, int demand) {
 		int links[];
-		int linksTemp[];
 		int nowSlot=-1;
-		int nowCore=-1;;
-		ArrayList<Integer> path = new ArrayList<Integer>();
+		int nowCore=-1;
+		double frag = 0;
+		int inter = 0;
+		ArrayList<Integer> path = new ArrayList<Integer>(); //ArrayList para facilitar a troca de valores
 		ArrayList<Slot> channel = new ArrayList<Slot>();
-		ArrayList<Slot> channelTemp = new ArrayList<Slot>();
-		int[] priority = {0,2,4,1,3,5,6};
-		for(int j:priority) {
-		//for (int j = 0; j < multigraph.getNumMultiedges();j++) {	//Num cores
+		
+		for (int j = 0; j < multigraph.getNumMultiedges();j++) {	//Num cores
 			for (int i = 0; i < multigraph.getNumEdges(); i++) {	//Num slots left
 				ArrayList<Integer> nowpath = new ArrayList<Integer>();
-				nowpath=getShortestPath(multigraph.getGraph(i,j),src,dst, demand);
-				if(nowpath==null||nowpath.size()<2){
+				nowpath = getShortestPath(multigraph.getGraph(i,j),src,dst, demand);
+				if(nowpath == null || nowpath.size() < 2){
 					continue;
 				}else{
-					if(nowpath.size()<path.size()||path.isEmpty()){
-						linksTemp = null;
-						channelTemp.clear();
-						boolean able = true;
-						int core = j;
-						int slot = i;
-
-						linksTemp = new int[nowpath.size() - 1];
-
-						for (int m = 0; m < nowpath.size() - 1; m++) {
-							linksTemp[m] = pt.getLink(nowpath.get(m), nowpath.get(m + 1)).getID();
+					if(nowpath.size() < path.size() || path.isEmpty()){
+						path = nowpath;
+						nowSlot = i;
+						nowCore = j;
+						for (int link:nowpath) {
+							inter += calculateCross(link, j, i, demand);
+							frag += calculateFrag(link, j, i, demand);
 						}
-						if(nowpath.isEmpty()) {
-							System.out.println("a");
+					} else if (nowpath.size() == path.size()) {
+						int nowInter = 0;
+						double nowFrag = 0; 
+						for (int link:nowpath) {
+							nowInter += calculateCross(link, j, i, demand);
+							nowFrag += calculateFrag(link, j, i, demand);
 						}
-						/*
-						for (int l = 0; l < linksTemp.length; l++) {
-							for (int m = slot; m < slot+demand; m++) {
-								channelTemp.add(new Slot(core, m, linksTemp[l] ));
-							}
-						}*/
-						
-						if(!crosstalkCheck(linksTemp, core, slot, demand, modulationLevel)) {
-							able = false;
-						}
-						
-						if(able) {
-							path=nowpath;
-							nowSlot=i;
-							nowCore =j;
+						if (nowInter < inter || nowFrag < frag) {
+							path = nowpath;
+							nowSlot = i;
+							nowCore = j;
+							inter = nowInter;
+							frag = nowFrag;
 						}
 					}
 				}
-				
 			}
 		}
 		if(path.size()<2){
@@ -429,7 +317,152 @@ public int[] MSP(WeightedGraph G, int s, int demand) {
 		}
 		return new Path(links, channel);
 	}
-	/*
+	
+	public double calculateFrag (int link, int core, int slot, int demand) {
+		boolean[] spectrum = pt.getLink(link).getSpectrum(core);
+		boolean[] s = new boolean[pt.getNumSlots()];
+		
+		for (int j = 0; j < pt.getNumSlots(); j++) {
+			if (spectrum[j])
+				s[j] = true;
+			else
+				s[j] = false;
+		}
+		
+		for (int j = slot; j < slot + demand; j++) {
+			s[j] = false;
+		}
+		
+		int lf = 0; // last frequency
+		int lb = 0; // last blank
+		int gaps = 0;
+		int nBig = 0;
+		int sBig = 0;
+		int nSmall = 0;
+		int sSmall = 320;
+		
+		boolean veri = false;
+		int size = 0;
+		ArrayList<Integer> space = new ArrayList<Integer>();
+		
+		for(int j = 0; j < pt.getNumSlots(); j++) {
+			if(s[j] == true) {
+				lb = j + 1;
+				if(veri == false) {
+					gaps++;
+				}
+				size++;
+				veri = true;
+			}
+			if(s[j] == false) {
+				lf = j + 1;
+				if(veri) {
+					space.add(size);
+					if (size >= sBig)
+						sBig = size;
+					if (size <= sSmall)
+						sSmall = size;
+				}
+				veri = false;
+				size = 0;
+			}
+			if(j == pt.getNumSlots()-1) {
+				if(veri) {
+					space.add(size);
+					if (size >= sBig)
+						sBig = size;
+					if (size <= sSmall)
+						sSmall = size;
+				}
+			}
+		}
+		
+		for(int a:space) {
+			if (a == sBig)
+				nBig++;
+			if (a == sSmall)
+				nSmall++;
+		}
+		
+		if (lb == 0)
+			return 1;
+
+		double cima = (double)(Math.abs(nBig * sBig - nSmall * sSmall) + 1);
+		double baixo = (double)(Math.abs(sBig - sSmall) + 1);
+		double number = cima/baixo;
+		//double number = (double)(Math.abs(nBig * sBig - nSmall * sSmall) + 1)/(double)(Math.abs(sBig - sSmall) + 1);
+		
+		double primeira = (double) lf/lb;
+		double segunda = (double)primeira * gaps;
+		double terceira = (double) segunda * number;
+		double fmm = (double) terceira/100;
+		
+		//double fmm = (double)(((lf/lb) * (double)gaps * (number))/(double)100);
+		
+		return fmm;
+		
+	}
+	
+	public int calculateCross(int link, int core, int slot, int demand) {
+		boolean[][] spectrum = pt.getLink(link).getSpectrum();
+		// 0
+		if (core == 0) {
+			int n = 0;
+			for (int i = slot; i < slot + demand; i++) {
+				// Cores 1, 5 e 6
+				if (!spectrum[1][i]) {
+					n++;
+				}
+				if (!spectrum[5][i]) {
+					n++;
+				}
+				if (!spectrum[6][i]) {
+					n++;
+				}
+			}
+			return n;
+		} else if (core == 5) {
+			int n = 0;
+			for (int i = slot; i < slot + demand; i++) {
+				// Cores 4, 6 e 0
+				if (!spectrum[0][i]) {
+					n++;
+				}
+				if (!spectrum[4][i]) {
+					n++;
+				}
+				if (!spectrum[6][i]) {
+					n++;
+				}
+			}
+			return n;
+		} else if (core == 6){
+			int n = 0;
+			for (int i = slot; i < slot + demand; i++) {
+				for (int j = 0; j < 6; j++) {
+					if (!spectrum[j][i]) {
+						n++;
+					}
+				}
+			}
+			return n;
+		} else {
+			int n = 0;
+			for (int i = slot; i < slot + demand; i++) {
+				if (!spectrum[6][i]) {
+					n++;
+				}
+				if (!spectrum[core-1][i]) {
+					n++;
+				}
+				if (!spectrum[core+1][i]) {
+					n++;
+				}
+			}
+			return n;
+		}
+	}
+	
 	public  Path getbestPathBack( int src, int dst, int demand,Path path) {
 		Path backupPath;
 		MultiGraph multigraphb = new MultiGraph(graph, pt, demand);		
@@ -452,17 +485,5 @@ public int[] MSP(WeightedGraph G, int s, int demand) {
 		return backupPath;
 	}
 	
-*/	
-	public boolean crosstalkCheck(int[] links, int core, int slot, int demand, int modulation) {
-		for(int l:links) {
-			//boolean[] dispo = pt.getLink(l).getAllocableSpectrum(modulation, 2, core);
-			for(int i=slot; i<slot+demand; i++) {
-				//if(!dispo[i]) {
-					//return false;
-				//}
-			}
-		}
-		return true;
-		
-	}
+	
 }

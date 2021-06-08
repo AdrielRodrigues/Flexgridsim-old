@@ -99,6 +99,19 @@ public class FlexGridLink {
 			flowsHere = new HashMap<Long, Flow>();
 		}
 	}
+	
+	public double rateUsed() {
+		int used = 0;
+		
+		for (int i = 0; i < this.cores; i++) {
+			for (int j = 0; j < this.slots; j++) {
+				if (!this.freeSlots[i][j]) {
+					used++;
+				}
+			}
+		}
+		return used;
+	}
 
 	public void setWhichBlocked(long id) {
 		this.whichBlockedThisLink = id;
@@ -931,9 +944,9 @@ public void updateNoise(Slot s, int modulation) {
 		public boolean allocationAffectsCoupledFibers(int i, int j, int modulation) {
 			for (Slot s : getCoupledFibersInUse(i, j)) {
 				//if (Decibel.subtract(power, totalNoise) < ModulationsMuticore.getSNRThreshold(modulation)) {
-				if(totalNoise > Modulations.threshold[this.modulationLevel[s.core][s.slot]]) {
-					return true;
-				}
+				//if(totalNoise > Modulations.threshold[this.modulationLevel[s.core][s.slot]]) {
+					//return true;
+				//}
 			}
 			return false;
 		}
@@ -950,5 +963,13 @@ public void updateNoise(Slot s, int modulation) {
 		}
 		return false;
 	}*/
+		
+	public void calcFMM () {
+		/***
+		 * 
+		 * Calcula a Fragmentação para o núcleo após adição e remoção de fluxos.
+		 * 
+		 ***/
+	}
 	
 }
