@@ -10,10 +10,8 @@ import flexgridsim.PhysicalTopology;
 import flexgridsim.Slot;
 import flexgridsim.TrafficGenerator;
 import flexgridsim.VirtualTopology;
-import flexgridsim.util.Crosstalk;
 import flexgridsim.util.KShortestPaths;
 import flexgridsim.util.Modulations;
-import flexgridsim.util.MultiGraph;
 import flexgridsim.util.WeightedGraph;
 
 
@@ -75,8 +73,6 @@ public class CVM implements RSA {
 		  } while (!find && modulation >= 0);
 		//while(mod>-1 &&modulation!=-1 && modulation!=mod+1);
 		
-		
-		
 		// If no possible path found, block the call
 		if (path == null) {
 			cp.blockFlow(flow.getID());
@@ -114,7 +110,7 @@ public class CVM implements RSA {
 	public int getPhysicalDistance(int[] links){
 		if(links!=null && links.length>0){
 			int physicalDistance = 0;
-			for (int i = 0; i < links.length - 1; i++) {
+			for (int i = 0; i < links.length; i++) {
 				physicalDistance += pt.getLink(links[i]).getDistance();
 			}
 			return physicalDistance;

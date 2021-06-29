@@ -10,10 +10,8 @@ import flexgridsim.PhysicalTopology;
 import flexgridsim.Slot;
 import flexgridsim.TrafficGenerator;
 import flexgridsim.VirtualTopology;
-import flexgridsim.util.Crosstalk;
 import flexgridsim.util.KShortestPaths;
 import flexgridsim.util.Modulations;
-import flexgridsim.util.ModulationsMuticore;
 import flexgridsim.util.WeightedGraph;
 
 
@@ -132,7 +130,6 @@ public class min_frag implements RSA {
 	}
 	
 	public ArrayList<Slot> allocate(int[] path, int demandInSlots) {
-		int first = -1;
 		int[] cores = {0, 1, 2, 3, 4, 5, 6};
 		double[] cps = new double[7];
 		double[] frag = new double[7];
@@ -250,7 +247,6 @@ public int findExactFit(int demandInSlots, int core, int[] path) {
 		
 		int counter = 0;
 		int first = -1;
-		int firstP = -1;
 		
 		ArrayList<int[]> index = new ArrayList<int[]>();
 		
@@ -424,7 +420,7 @@ public int findExactFit(int demandInSlots, int core, int[] path) {
 	public int getPhysicalDistance(int[] links){
 		if(links!=null&& links.length>0){
 			int physicalDistance = 0;
-			for (int i = 0; i < links.length - 1; i++) {
+			for (int i = 0; i < links.length; i++) {
 				physicalDistance += pt.getLink(links[i]).getDistance();
 			}
 			return physicalDistance;

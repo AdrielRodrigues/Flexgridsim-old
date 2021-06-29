@@ -2,9 +2,13 @@
  * Backup, Routing,Modulation Level and Spectrum Assignment
  */
 package flexgridsim.rsa;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import org.w3c.dom.Element;
 
+import flexgridsim.FlexGridLink;
 import flexgridsim.Flow;
 import flexgridsim.LightPath;
 import flexgridsim.Path;
@@ -22,7 +26,7 @@ import flexgridsim.util.WeightedGraph;
  * @author adriel
  *
  */
-public class AddMap implements RSA  {
+public class TesteVersion implements RSA  {
 	private PhysicalTopology pt;
 	private VirtualTopology vt;
 	private ControlPlaneForRSA cp;
@@ -62,11 +66,10 @@ public class AddMap implements RSA  {
 
 	@Override
 	public void flowArrival(Flow flow) {
-		long id=-1;
 		int guardBand=1;
 		int demandInSlots;
-		Path path = null;
 		int modulation = 0;
+		long idFlow = flow.getID();
 		
 		// Para cada caminho encontrado para o roteamento
 		try {
@@ -74,69 +77,35 @@ public class AddMap implements RSA  {
 				int[] p = nodesToLink(nodes);
 				
 				int distance = getPhysicalDistance(p);
-				if(distance <= 0)
-					continue;
 				modulation=Modulations.getModulationByDistance(distance);
 				demandInSlots = (int) Math.ceil(flow.getRate() / (double) Modulations.getBandwidth(modulation)) + guardBand;
 				
-				// Matriz base
-				boolean [][] spectrum = new boolean[pt.getNumCores()][pt.getNumSlots()];
-				for (int i = 0; i < pt.getNumCores(); i++) {
-					for (int j = 0; j < pt.getNumSlots(); j++) {
-						spectrum[i][j] = true;
-					}
-				}
-				
-				// Matriz do caminho
-				for (int link:p) {
-					boolean [][] sp = pt.getLink(link).getSpectrum();
+				FileWriter fStream;
+				if (modulation >= 4) {
 					
-					for (int i = 0; i < pt.getNumCores(); i++) {
-						for (int j = 0; j < pt.getNumSlots(); j++) {
-							spectrum[i][j] = spectrum[i][j] && sp[i][j];
+					try {
+						File file = new File("modulation.csv");
+						if(!file.exists()) {
+							fStream = new FileWriter(file, true);
+							fStream.append("idFlow, distance, modulation, demandInSlots");
+							fStream.append("\n");
+						} else {
+							fStream = new FileWriter(file, true);
 						}
+						fStream.append(Long.toString(idFlow) + ", " + Integer.toString(distance) + ", " + Integer.toString(modulation) + "," + Integer.toString(demandInSlots));
+						fStream.append("\n");
+						fStream.close();
+					} catch (IOException e) {
+						System.out.println("Error writing the graph file");
+					} catch (IndexOutOfBoundsException e){
+						System.out.println("Não calculou valor");
 					}
-				}
-
-				path = allocateTwo(p, spectrum, demandInSlots);
-				
-				//path = allocate(p, demandInSlots);
-				if(path != null) {
-					break;
 				}
 			}
 		}catch(NullPointerException e) {
 			System.out.println(flow.getID());
 		}
-		
-		if (path == null) {
-			cp.blockFlow(flow.getID());
-			return;
-		} else if (path.getLinks() == null || path.getSlotList().isEmpty()) {
-			cp.blockFlow(flow.getID());
-			return;
-		}
-		
-		id = vt.createLightpath(path, modulation);
-		
-		if (id >= 0) {
-			flow.setLinks(path.getLinks());
-			flow.setSlotList(path.getSlotList());
-			ArrayList<LightPath> lightpath = new ArrayList<>();
-			lightpath.add(vt.getLightpath(id));
-			flow.setModulationLevel(modulation);
-			
-			if(!cp.acceptFlow(flow.getID(), lightpath)) {
-				cp.blockFlow(flow.getID());
-			}
-			return;
-		}	
-		
-		if(id<0){
-			vt.removeLightPath(id);
-			cp.blockFlow(flow.getID());
-			return;
-		}
+		return;
 	}
 	
 	public double [] calculateFrag(boolean [][] spectrum) {
@@ -454,7 +423,7 @@ public class AddMap implements RSA  {
 	public int getPhysicalDistance(int[] links){
 		if(links!=null && links.length>0){
 			int physicalDistance = 0;
-			for (int i = 0; i < links.length; i++) {
+			for (int i = 0; i < links.length - 1; i++) {
 				physicalDistance += pt.getLink(links[i]).getDistance();
 			}
 			return physicalDistance;
