@@ -18,7 +18,7 @@
     
     <virtual-topology  name="USA">
     </virtual-topology>
-    <physical-topology name="USA" cores="7" protection="true" slots="320" sharing="false" grooming="false" slotsBandwidth="12.5">
+    <physical-topology name="USA" cores="7" protection="true" slots="320" sharing="false" grooming="true" slotsBandwidth="12.5">
         <nodes>
             <node id="0"/>
             <node id="1"/>

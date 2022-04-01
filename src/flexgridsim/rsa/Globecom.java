@@ -52,6 +52,9 @@ public class Globecom implements RSA  {
 		
 		long id=-1;
 		int guardBand=1;
+
+		if(pt.getGrooming())
+			guardBand=0;
 		
 		int demandInSlots = 0; // Inicializa variável
 		Path path;

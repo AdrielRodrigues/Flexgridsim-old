@@ -10,6 +10,7 @@ import org.w3c.dom.*;
 
 import flexgridsim.util.ModulationsMuticore;
 
+
 /**
  * The virtual topology is created based on a given Physical Topology and
  * on the lightpaths specified on the XML file.
@@ -81,8 +82,6 @@ public class VirtualTopology {
         }
     }
     
-    
-    
     /**
      * First, creates a lightpath in the Physical Topology through the createLightpathInPT
      * function. Then, gets the lightpath's source and destination nodes, so a new
@@ -100,12 +99,10 @@ public class VirtualTopology {
         int src, dst;
         long id;
         if (path.getLinks().length < 1) {
-        	System.out.println("ERRO");
             throw (new IllegalArgumentException());
         } else {
             if (canCreateLightpath(path.getSlotList(), path.getLinks(), path.getModulation())) {
             //if (canCreateLightpath(path.getSlotList())) {
-            	
                 createLightpathInPT(path.getSlotList(), modulationLevel);
     	        src = pt.getLink(path.getLinks()[0]).getSource();
     	        dst = pt.getLink(path.getLinks()[path.getLinks().length - 1]).getDestination();

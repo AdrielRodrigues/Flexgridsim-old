@@ -36,6 +36,7 @@ public class ControlPlane implements ControlPlaneForRSA {
     private VirtualTopology vt;
     private Map<Flow, ArrayList<LightPath>> mappedFlows; // Flows and lightpath that have been accepted into the network
     private Map<Flow, ArrayList<LightPath>> mappedPFlows; // Flows and lightpath protection that have been accepted into the network
+    
     private Map<Long, Flow> activeFlows; // Flows that have been accepted or that are waiting for a decision
 
     private Map<Long, Failure> failure; // Keep id and failure of which links have failed
@@ -159,11 +160,6 @@ public class ControlPlane implements ControlPlaneForRSA {
             	int[] vetor = flow.getLinks();
             	if(!pt.getLink(vetor[i]).isLinkActive()) {
             		this.blockFlow(id);
-            		
-            		long idtemp = pt.getLink(vetor[i]).getWhichBlocked();
-            		Failure ff =  failure.get(idtemp);
-            		ff.addFlowsFailed(flow);
-            		
             		return false;
             	}
             }
@@ -284,7 +280,6 @@ public class ControlPlane implements ControlPlaneForRSA {
      */
     public boolean blockFlow(long id) {
         Flow flow;
-
         if (id < 0) {
             throw (new IllegalArgumentException());
         } else {

@@ -18,17 +18,12 @@ public class SimulationRunner {
      * @param cp the the simulation's control plane
      * @param events the simulation's event scheduler
      */
-	
-	//Change cp
 	public SimulationRunner(){}
 	public void running(ControlPlane cp, EventScheduler events) {
         Event event;
         Tracer tr = Tracer.getTracerObject();
-        MyStatistics st = MyStatistics.getMyStatisticsObject();
-        int a = 0;
-        int b = 2;
+        MyStatistics st = MyStatistics.getMyStatisticsObject();        
         while ((event = events.popEvent()) != null) {
-        	a++;
 	        tr.add(event);
 	        st.addEvent(event, cp);
             cp.newEvent(event);

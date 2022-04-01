@@ -11,7 +11,7 @@ import flexgridsim.util.Modulations;
  * This class is based on the WDMLink but it's adapted to RSA operations for
  * contiguous slots allocation.
  * 
- * @author pedrom
+ * @author adriel
  */
 public class FlexGridLink {
 
@@ -23,11 +23,12 @@ public class FlexGridLink {
 	private boolean[][] freeSlots; //se for usado pelo caminho ou protecao é false
 	private boolean[][] SlotCanBeShared;// se o slot é usado pra proteger ele é true caso seja usado pelo caminho ele é false
 	private int[][] timeSharing;//conta quantos caminhos estão usando ele
-	private boolean linkAtivo;//true se não houver falhas no link
 	private double weight;
 	private int[][] modulationLevel;
 	private int distance;
 	private int cores;
+	
+	private boolean linkAtivo;//true se não houver falhas no link
 	
 	private double [] FMM;
 	
@@ -904,27 +905,7 @@ public void updateNoise(Slot s, int modulation) {
 		}
 		return coupledFibers;
 	}
-	
-	//public boolean[] getAllocableSpectrum(int modulation, double power, int core) {
-	//public boolean[] getAllocableSpectrum(int modulation) {
-		//boolean[] freeSlots = new boolean[slots];
-		//for (int i = 0; i < freeSlots.length; i++) {
-			//for (int j = 0; j < freeSlots.length; j++) {
-				//double SNR = Decibel.subtract(power, noise[i][j]);
-				//double SNR = noise[core][j] + Modulations.in[modulation];
-				//if (this.freeSlots[i][j] && SNR >= ModulationsMuticore.getSNRThreshold(modulation) && !allocationAffectsCoupledFibers(i, j, modulation, power)) { // check if allocation will  disrupt other connections
-				//if(this.freeSlots[core][j]) {// && SNR <= Modulations.threshold[modulation] && !allocationAffectsCoupledFibers(core, j, modulation, power)) {
-					//freeSlots[j] = true;
-				//} else {
-					//freeSlots[j] = false;
-				//}
-			//}
-			
-		//}
-		// printSpectrum();
-		//return freeSlots;
-	//}
-	
+
 		public boolean[][] getAllocableSpectrum(int modulation) {
 			/* A intenção é fazer toda a verificação de possibilidade de alocação
 			   dentro do link para a modulação aplicada */
@@ -949,27 +930,5 @@ public void updateNoise(Slot s, int modulation) {
 				//}
 			}
 			return false;
-		}
-		
-		/*
-	public boolean allocationAffectsCoupledFibers(int i, int j, int modulation, double power) {
-		for (Slot s : getCoupledFibersInUse(i, j)) {
-			//double totalNoise = Decibel.add(noise[s.core][s.slot], ModulationsMuticore.interCoreXT(cores));
-			double totalNoise = noise[s.core][s.slot] + power;
-			//if (Decibel.subtract(power, totalNoise) < ModulationsMuticore.getSNRThreshold(modulation)) {
-			if(totalNoise > Modulations.threshold[this.modulationLevel[s.core][s.slot]]) {
-				return true;
-			}
-		}
-		return false;
-	}*/
-		
-	public void calcFMM () {
-		/***
-		 * 
-		 * Calcula a Fragmentação para o núcleo após adição e remoção de fluxos.
-		 * 
-		 ***/
-	}
-	
+		}	
 }

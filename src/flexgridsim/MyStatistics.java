@@ -32,6 +32,7 @@ public class MyStatistics {
     private double ectrans;
     private double simTime;
     private double dataTransmitted;
+    
     private double avgBitsPerSymbol;
     private int avgBitsPerSymbolCount;
     // Diff
@@ -44,7 +45,7 @@ public class MyStatistics {
     private int[][][] blockedPairsDiff;
     private int[][][] requiredBandwidthPairsDiff;
     private int[][][] blockedBandwidthPairsDiff;
-    private int[][] numberOfUsedTransponders;;
+    private int[][] numberOfUsedTransponders;
     
     // Failure
     private int failures;
@@ -126,6 +127,7 @@ public class MyStatistics {
         this.failuresPairs = new int [numNodes][numNodes];
         this.requiredBandwidthPairs = new int[numNodes][numNodes];
         this.blockedBandwidthPairs = new int[numNodes][numNodes];
+        
         this.avgBitsPerSymbol = 0;
         this.avgBitsPerSymbolCount = 0;
         this.minNumberArrivals = minNumberArrivals;
@@ -136,6 +138,7 @@ public class MyStatistics {
         this.blockedDiff = new int[numClasses];
         this.requiredBandwidthDiff = new int[numClasses];
         this.blockedBandwidthDiff = new int[numClasses];
+        
         for (int i = 0; i < numClasses; i++) {
             this.arrivalsDiff[i] = 0;
             this.blockedDiff[i] = 0;
@@ -183,7 +186,7 @@ public class MyStatistics {
         }
         jfi = (sum1 * sum1) / ((float) count * sum2);
         plotter.addDotToGraph("jfi", load, jfi);
-    	//POWE CONSUPTION
+    	//POWER CONSUPTION
     	double ecoxc = 0;
     	for (int i = 0; i < pt.getNumNodes(); i++) {
     		//OXCs consume 150 Watts and each port 85 Watts. 
@@ -366,7 +369,7 @@ public class MyStatistics {
         		n++;
             }
             plotter.addDotToGraph("hops",load, links);
-            plotter.addDotToGraph("slotsoccupied",load, linkst*slotsocuped);
+            plotter.addDotToGraph("slotsoccupied",load, linkst*slotsocuped);	
             //taxa em Mbs * duracao
             dataTransmitted += flow.getRate();
             ectrans += flow.getDuration() *( flow.getSlotList().size()-1) * Modulations.getPowerConsumption(flow.getModulationLevel());

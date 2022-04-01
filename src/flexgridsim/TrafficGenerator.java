@@ -41,6 +41,7 @@ public class TrafficGenerator {
      * @param xml file that contains all information about the simulation
      * @param forcedLoad range of offered loads for several simulations
      */
+    
     public TrafficGenerator(Element xml, double forcedLoad) {
         int rate, cos, weight;
         double holdingTime;

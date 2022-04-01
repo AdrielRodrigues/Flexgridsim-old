@@ -81,7 +81,7 @@ public class min_frag implements RSA {
 		}
 	
 		//id = vt.createLightpath(path, Modulations.getModulationLevel(pt.getSlotCapacity()));
-		id = vt.createLightpath(path, modulation);
+	id = vt.createLightpath(path, modulation);
 		
 		if (id >= 0) {
 			flow.setLinks(path.getLinks());

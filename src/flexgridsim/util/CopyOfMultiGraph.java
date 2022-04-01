@@ -17,7 +17,7 @@ import flexgridsim.Slot;
  * 
  * @author helder //implements Cloneable
  */
-public class CopyOfMultiGraph {
+public class CopyOfMultiGraph  {
 	private PhysicalTopology pt;
 	private WeightedGraph G;
 	private int demand;
@@ -27,14 +27,13 @@ public class CopyOfMultiGraph {
 	protected boolean[][][][] multiedges; // adjacency matrix
 	protected boolean[][][][] sharedMultiedges; // adjacency matrix
 		
+	
 	/**
 	 * Instantiates a new multi graph.
 	 */
 	public CopyOfMultiGraph(){
 
 	}
-	
-
 	/**
 	 * Instantiate a spectrum graph from a weighted graph the edges from the weighted graph will be
 	 * transformed in N-b+1 edges, where N is the number of slots in the Physical Topology pt.
@@ -43,11 +42,10 @@ public class CopyOfMultiGraph {
 	 * @param pt the pt
 	 * @param demand the number of requested slots
 	 */
-
 	public CopyOfMultiGraph(WeightedGraph G, PhysicalTopology pt) {
 		this.pt = pt;
 		this.G=G;
-		this.demand = demand;
+		this.demand =demand;
 		this.numNodes = G.getNumNodes();
 		this.numEdges = pt.getNumSlots();//-demand;//+1?
 		this.numMultiEdges= pt.getNumCores();
@@ -60,7 +58,6 @@ public class CopyOfMultiGraph {
 				for (int k = 0; k < this.numMultiEdges; k++) {
 					for (int s = 0; s < this.numEdges; s++) {
 						//Normal se não compartilha slot
-						
 						//Na construção importa que todos sejam True
 						if(!pt.getOverlap()){						
 							if(G.isEdge(i,j)&&i!=j&&continuosSlotsIncore(i,j,k,s)){// se de k ate pt.getNumSlots()-demand-1
